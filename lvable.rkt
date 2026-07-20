@@ -4,38 +4,21 @@
 (define input (read))
 (define inputlist (string->list (symbol->string input)))
 
-(define (has-lv lst)
+
+
+(define (scanner lst seen-l? seen-v? prev)
   (cond
-    [(empty? lst)
-     (has-v-not-first inputlist)]
+    [(and (or seen-l? seen-v?) (empty? lst)) 1]
+    [(empty? lst) 2]
+  
+    [(and prev (char=? prev #\l) (char=? (car lst) #\v)) 0]
+      
+    [(char=? (car lst) #\v)
+     (scanner (cdr lst) seen-l? #t (car lst))]
 
-    [(and (char=? (car lst) #\l)
-          (not (empty? (cdr lst)))
-          (char=? (car (cdr lst)) #\v))
-     (display "0")]
-    [else (has-lv (cdr lst))]
-    ))
+    [(char=? (car lst) #\l)
+     (scanner (cdr lst) #t seen-v? (car lst))]
+    [else (scanner (cdr lst) seen-l? seen-v? (car lst))]))
 
+(displayln (scanner inputlist #f #f #f))
 
-(define (has-v-not-first lst)
-  (cond
-    [(or (empty? lst)
-         (empty? (cdr lst)))
-     (has-l-not-last inputlist)]
-     
-    [(char=? (car (cdr lst)) #\v)
-     (displayln "1")]
-    [else (has-v-not-first (cdr lst))]))
-
-(define (has-l-not-last lst)
-  (cond
-    [(empty? lst)
-     (displayln "2")]
-    [(and (char=? (car lst) #\l)
-          (not (empty? (cdr lst))))
-     (displayln "1")]
-    [else (has-l-not-last (cdr lst))]))
-
-
-
-(has-lv inputlist)
