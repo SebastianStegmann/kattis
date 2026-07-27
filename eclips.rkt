@@ -1,0 +1,11 @@
+#lang racket
+
+(define words (string-split (read-line)))
+(define process
+  (filter (lambda (word)
+            (string-contains? word "e"))
+          words))
+
+(if (or (empty? process) (eof-object? process))
+    (displayln "oh noes")
+    (displayln (string-join process " ")))
